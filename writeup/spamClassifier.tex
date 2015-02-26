@@ -1,28 +1,13 @@
-\documentclass[10pt,twocolumn,letterpaper]{article}
-
-\usepackage{cvpr}
-\usepackage{times}
-\usepackage{epsfig}
+\documentclass{article} % For LaTeX2e
+\usepackage{cos424,times}
+\usepackage{hyperref}
+\usepackage{url}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{caption}
-\usepackage{subcaption}
+\usepackage{multirow}
 
-\usepackage[breaklinks=true,bookmarks=false, colorlinks=true]{hyperref}
+\bibliographystyle{plos2009}
 
-\cvprfinalcopy % *** Uncomment this line for the final submission
-
-\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
-\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
-
-% Pages are numbered in submission mode, and unnumbered in camera-ready
-%\ifcvprfinal\pagestyle{empty}\fi
-\setcounter{page}{1}
-\begin{document}
-
-
-%%%%%%%%% TITLE
 \title{Spam Classification}
 
 \author{Curtis Belmonte\\
@@ -32,30 +17,45 @@ Dorothy Chen\\
 {\tt\small dschen@princeton.edu}
 }
 
-\maketitle
-%\thispagestyle{empty}
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
 
-%%%%%%%%% ABSTRACT
+\begin{document}
+
+\maketitle
+
 \begin{abstract}
-   
+Spam, or unsolicited email, is becoming an increasingly large problem as email becomes more and more popular. In this assignment, we discuss various machine learning methods and use them to create spam classifiers. We then analyze the results and effectiveness of these methods. 
 \end{abstract}
 
-%%%%%%%%% BODY TEXT
-\section{Introduction}
+%------------------------------------------------------------------------
+\section{Introduction and background}
+Email is something used daily by a large number of people. Advertisers and other people trying to sell things have taken advantage of this fact by sending out unsolicited emails, which is referred to as spam. In response to this, spam filters were created to identify these emails and to keep them from clogging up inboxes.
 
+%------------------------------------------------------------------------
+\section{Description of data and data processing}
+The training data set consists of 22,500 spam emails and 22,000 non-spam emails from the trec07 data set. We used the provided script to define a vocabulary create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam emails and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
+
+We also used feature selection to decrease the size of the vocabulary.
+
+%------------------------------------------------------------------------
+\section{Methods}
+\subsection{Method 1}
+\subsection{Method 2}
+\subsection{Method 3}
+
+%------------------------------------------------------------------------
+\section{Results}
+
+%------------------------------------------------------------------------
+\section{Analysis of results}
+
+%------------------------------------------------------------------------
+\section{Conclusion and possible extensions}
 
 %------------------------------------------------------------------------
 \section{Acknowledgments}
 
-
-%------------------------------------------------------------------------
-\section{References}
-
-{\small
-\bibliographystyle{ieee}
-\bibliography{egbib}
-[1] Reference \#1
-
-}
+\bibliography{ref}
 
 \end{document}
