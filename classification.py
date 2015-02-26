@@ -1,7 +1,6 @@
 from email_process import read_bagofwords_dat, read_classes_txt
 from sklearn.metrics import roc_curve
 import matplotlib.pyplot as plt
-import numpy
 
 def train_classifier(classifier):
     filename = 'trec07p_data/Train/train_emails_bag_of_words_200.dat'
@@ -24,6 +23,5 @@ def test_classifier(classifier):
     
     fpr, tpr, _ = roc_curve(classes, predictions)
     plt.plot(fpr, tpr, '.-')
-    x = [0.01 * n for n in xrange(101)]
-    plt.plot(x, x, '--')
+    plt.plot([0, 1], [0, 1], '--')
     plt.savefig('roc_curve.png')
