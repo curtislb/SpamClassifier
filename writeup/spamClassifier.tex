@@ -34,15 +34,24 @@ Email is something used daily by a large number of people. Advertisers and other
 
 %------------------------------------------------------------------------
 \section{Description of data and data processing}
-The training data set consists of 22,500 spam emails and 22,000 non-spam emails from the trec07 data set. We used the provided script to define a vocabulary create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam emails and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
-
-We also used feature selection to decrease the size of the vocabulary.
+The training data set consists of 22,500 spam emails and 22,500 non-spam emails from the trec07p data set. We used the provided script to define a vocabulary create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam emails and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
 
 %------------------------------------------------------------------------
 \section{Methods}
-\subsection{Method 1}
-\subsection{Method 2}
-\subsection{Method 3}
+We used the methods implemented in the scikit-learn package. [1]
+\subsection{Naive Bayes, using multinomial implementation}
+As a baseline, we trained a Naive Bayes multinomial model on all of the training data using the default parameters provided by scikit-learn. The default parameters included Laplace smoothing, learning class prior probabilities, and no previously provided class priors. 
+
+Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. 
+\subsection{Decision tree}
+Training this classifier on all available training data and testing on the provided testing set resulted in an accuracy rate of of 99.5\%. We also used the default parameters, which meant that splits were determined using Gini impurity, the best split at each node was chosen, and the depth of the tree was not constrained. However, nodes were only split if it contained at least two samples; a leaf could only exist if it had at least one sample. 
+
+Because of the large number of features and because the depth of the tree was not constrained, this method was significantly slower than the other two.
+\subsection{Random forests with 10 trees}
+We once again used the default parameters. This includes building 10 random trees using Gini impurity 
+Using this method, we got 99.58\% accuracy. 
+
+This method was much faster than the decision tree.
 
 %------------------------------------------------------------------------
 \section{Results}
@@ -56,6 +65,9 @@ We also used feature selection to decrease the size of the vocabulary.
 %------------------------------------------------------------------------
 \section{Acknowledgments}
 
+%------------------------------------------------------------------------
+\section{References}
 \bibliography{ref}
+[1] http://scikit-learn.org/stable/
 
 \end{document}
