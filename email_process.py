@@ -45,6 +45,13 @@ def read_bagofwords_dat(myfile, numofemails=10000):
     bagofwords=numpy.reshape(bagofwords,(numofemails,-1))
     return bagofwords
 
+def read_classes_txt(filename):
+    with open(filename) as file:
+        classes = []
+        for line in file:
+            classes.append(1 if line.rstrip() == 'Spam' else 0)
+        return numpy.array(classes)
+
 def tokenize_corpus(path, train=True):
     porter = nltk.PorterStemmer() # also lancaster stemmer
     wnl = nltk.WordNetLemmatizer()
