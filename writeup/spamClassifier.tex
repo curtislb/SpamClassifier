@@ -48,7 +48,7 @@ Training this classifier on all available training data and testing on the provi
 
 Because of the large number of features and because the depth of the tree was not constrained, this method was significantly slower than the other two.
 \subsection{Random forests with 10 trees}
-We once again used the default parameters. This includes building 10 random trees using Gini impurity 
+We once again used the default parameters. This includes building 10 random trees using Gini impurity.
 Using this method, we got 99.58\% accuracy. 
 
 This method was much faster than the decision tree.
@@ -61,6 +61,12 @@ This method was much faster than the decision tree.
 
 %------------------------------------------------------------------------
 \section{Conclusion and possible extensions}
+
+We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. 
+
+To elaborate on the above points, word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation also matters, because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
+
+Another possible extension is using a different data set. While our classifier performed very well on this particular data set, that performance might not necessarily hold for use on other data sets. This is because the set itself might have some trait that's highly indicative of spam versus not-spam that is not indicative of or present in the population of emails as a whole. It would be helpful to use a classifier trained on one set to test a different email corpus. 
 
 %------------------------------------------------------------------------
 \section{Acknowledgments}
