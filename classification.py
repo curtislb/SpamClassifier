@@ -1,5 +1,6 @@
 from email_process import read_bagofwords_dat, read_classes_txt
 from sklearn.cross_validation import StratifiedKFold
+from sklearn.feature_selection import SelectPercentile
 from sklearn.metrics import roc_curve, precision_recall_curve
 import matplotlib.pyplot as plt
 import time
@@ -7,26 +8,39 @@ import time
 TRAIN_DIR = 'trec07p_data/Train/'
 TEST_DIR = 'trec07p_data/Test/'
 
+TRAIN_WORDS = read_bagofwords_dat(TRAIN_DIR + 'train_emails_bag_of_words_200.dat', 45000)
+TRAIN_CLASSES = read_classes_txt(TRAIN_DIR + 'train_emails_classes_200.txt')
+TEST_WORDS = read_bagofwords_dat(TEST_DIR + 'test_emails_bag_of_words_0.dat', 5000)
+TEST_CLASSES = read_classes_txt(TEST_DIR + 'test_emails_classes_0.txt')
+
+F_SELECTOR = SelectPercentile(percentile=5)
+F_SELECTOR.fit(TRAIN_WORDS, TRAIN_CLASSES)
+
 ###############################################################################
 
 # Training
 
-def _train_classifier(classifier, X, y):
+def _train_classifier(classifier, X, y, f_selector=None):
+    if f_selector is not None:
+        X = f_selector.transform(X)
     start = time.time()
     classifier.fit(X, y)
     print 'Time:', (time.time() - start)
 
-def train_classifier(classifier):
-    filename = TRAIN_DIR + 'train_emails_bag_of_words_200.dat'
-    words = read_bagofwords_dat(filename, 45000)
-    classes = read_classes_txt(TRAIN_DIR + 'train_emails_classes_200.txt')
-    _train_classifier(classifier, words, classes)
+def train_classifier(classifier, select_features=False):
+    if select_features:
+        _train_classifier(classifier, TRAIN_WORDS, TRAIN_CLASSES, F_SELECTOR)
+    else:
+        _train_classifier(classifier, TRAIN_WORDS, TRAIN_CLASSES)
     
 ###############################################################################
 
 # Testing
 
-def _test_classifier(classifier, X, y, make_graphs=True):
+def _test_classifier(classifier, X, y, f_selector=None, make_graphs=True,):
+    if f_selector is not None:
+        X = f_selector.transform(X)
+    
     predictions = classifier.predict(X)
     pred_probs = classifier.predict_proba(X)[:,1]
     
@@ -69,28 +83,28 @@ def _test_classifier(classifier, X, y, make_graphs=True):
         plt.ylabel('Precision')
         plt.savefig('pr_curve.png')
 
-def test_classifier(classifier):
-    filename = TEST_DIR + 'test_emails_bag_of_words_0.dat'
-    words = read_bagofwords_dat(filename, 5000)
-    classes = read_classes_txt(TEST_DIR + 'test_emails_classes_0.txt')
-    _test_classifier(classifier, words, classes)
+def test_classifier(classifier, select_features=False):
+    if select_features:
+        _test_classifier(classifier, TEST_WORDS, TEST_CLASSES, F_SELECTOR)
+    else:
+        _test_classifier(classifier, TEST_WORDS, TEST_CLASSES)
     
 ###############################################################################
 
 # Cross Validation
 
-def cross_validation(classifier, num_folds=5):
-    filename = TRAIN_DIR + 'train_emails_bag_of_words_200.dat'
-    words = read_bagofwords_dat(filename, 45000)
-    classes = read_classes_txt(TRAIN_DIR + 'train_emails_classes_200.txt')
-    
-    skf = StratifiedKFold(classes, num_folds)
+def cross_validation(classifier, num_folds=5, select_features=False):
+    skf = StratifiedKFold(TRAIN_CLASSES, num_folds)
     fold = 1
     for train_index, test_index in skf:
         print 'Fold #', fold
-        X_train, X_test = words[train_index], words[test_index]
-        y_train, y_test = classes[train_index], classes[test_index]
-        _train_classifier(classifier, X_train, y_train)
-        _test_classifier(classifier, X_test, y_test, False)
+        X_train, X_test = TRAIN_WORDS[train_index], TRAIN_WORDS[test_index]
+        y_train, y_test = TRAIN_CLASSES[train_index], TRAIN_CLASSES[test_index]
+        if select_features:
+            _train_classifier(classifier, X_train, y_train, F_SELECTOR)
+            _test_classifier(classifier, X_test, y_test, F_SELECTOR, False)
+        else:
+            _train_classifier(classifier, X_train, y_train)
+            _test_classifier(classifier, X_test, y_test, make_graphs=False)
         print '------------------'
         fold += 1

@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 if __name__ == '__main__':
     classifier = DecisionTreeClassifier()
-    train_classifier(classifier)
-    test_classifier(classifier)
+    train_classifier(classifier, select_features=False)
+    test_classifier(classifier, select_features=False)
     print '------------------'
-    cross_validation(classifier)
+    cross_validation(classifier, select_features=False)
