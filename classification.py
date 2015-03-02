@@ -70,14 +70,15 @@ def _test_classifier(classifier, X, y, f_selector=None, make_graphs=True,):
     
     if make_graphs:
         fpr, tpr, __ = roc_curve(y, pred_probs)
+        plt.clf()
         plt.plot(fpr, tpr, 'o-')
         plt.plot([0.0, 1.0], [0.0, 1.0], '--')
         plt.xlabel('False positive rate')
         plt.ylabel('True positive rate')
         plt.savefig('roc_curve.png')
-        plt.clf()
         
         prec, rec, __ = precision_recall_curve(y, pred_probs)
+        plt.clf()
         plt.plot(rec, prec, 'o-')
         plt.xlabel('Recall')
         plt.ylabel('Precision')
