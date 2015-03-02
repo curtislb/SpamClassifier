@@ -1,6 +1,7 @@
 trec07p_data/Train/train_emails_bag_of_words_200.dat
 writeup/*.aux
 writeup/*.log
+writeup/*.out
 *.pyc
 .project
 .pydevproject
