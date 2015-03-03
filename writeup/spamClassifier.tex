@@ -27,7 +27,7 @@ Dorothy Chen\\
 \maketitle
 
 \begin{abstract}
-Spam, or unsolicited email, is becoming an increasingly large problem as email becomes more and more popular. In this assignment, we discuss various machine learning methods and use them to create spam classifiers. We then analyze the results and effectiveness of these methods. 
+Spam, or unsolicited email, is becoming an increasingly large problem as email becomes more and more popular. In this assignment, we discuss various machine learning methods and use them to create spam classifiers. We then analyze the results and effectiveness of these methods. We found that logistic regression is the best method to use for this problem, and AdaBoost is the least preferable. 
 \end{abstract}
 
 %------------------------------------------------------------------------
@@ -58,7 +58,7 @@ We used the methods implemented in the scikit-learn package. [1]
 \section{Preliminary results}
 \subsection{Simple classifiers}
 \subsubsection{Multinomial naive Bayes}
-Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. The ROC curve can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision recall curve can be seen in figure \ref{fig:nb}(b). Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup'' folder of the GitHub repository for this project. [2]
+Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. The ROC curve can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision recall curve can be seen in figure \ref{fig:nb}(b). Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the GitHub repository for this project. [2]
 
 \subsubsection{Decision tree}
 Training this classifier on all available training data and testing on the provided testing set resulted in an accuracy rate of of 99.5\%. As the ROC curve is almost identical to that of multinomial naive Bayes, it also has a very high true positive and low false positive rate. 
@@ -79,11 +79,11 @@ In an effort to view the data more clearly, we plotted the data on log scales. S
 \begin{figure}[h]
   \centering
   \begin{subfigure}{0.35\textwidth}
-    \includegraphics[width=\textwidth]{naive_bayes_roc_curve.png}
+    \includegraphics[width=\textwidth]{images/naive_bayes_roc_curve.png}
     \caption{ROC curve}
   \end{subfigure}
   \begin{subfigure}{0.35\textwidth}
-    \includegraphics[width=\textwidth]{naive_bayes_pr_curve.png}
+    \includegraphics[width=\textwidth]{images/naive_bayes_pr_curve.png}
     \caption{Precision-recall curve}
   \end{subfigure}
   \caption{ROC and precision-recall curves for Multinomial Naive Bayes}
