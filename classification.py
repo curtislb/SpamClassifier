@@ -5,12 +5,13 @@ from sklearn.metrics import roc_curve, precision_recall_curve
 import matplotlib.pyplot as plt
 import time
 
-TRAIN_DIR = 'trec07p_data/Train/'
-TEST_DIR = 'trec07p_data/Test/'
+TRAIN_DIR, TRAIN_SIZE = 'trec07p_data/Train/', 45000
+TEST_DIR, TEST_SIZE = 'trec07p_data/Test/', 5000
+# TEST_DIR, TEST_SIZE = '/run/media/curtis/The/Downloads/P1Data/Test/', 20000
 
-TRAIN_WORDS = read_bagofwords_dat(TRAIN_DIR + 'train_emails_bag_of_words_200.dat', 45000)
+TRAIN_WORDS = read_bagofwords_dat(TRAIN_DIR + 'train_emails_bag_of_words_200.dat', TRAIN_SIZE)
 TRAIN_CLASSES = read_classes_txt(TRAIN_DIR + 'train_emails_classes_200.txt')
-TEST_WORDS = read_bagofwords_dat(TEST_DIR + 'test_emails_bag_of_words_0.dat', 5000)
+TEST_WORDS = read_bagofwords_dat(TEST_DIR + 'test_emails_bag_of_words_0.dat', TEST_SIZE)
 TEST_CLASSES = read_classes_txt(TEST_DIR + 'test_emails_classes_0.txt')
 
 F_SELECTOR = SelectPercentile(percentile=5)
