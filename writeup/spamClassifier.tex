@@ -61,7 +61,7 @@ We used the following methods, as implemented in the Python scikit-learn package
 \subsection{Evaluation metrics}
 For each classification method, we used stratified 5-fold cross-validation on the training set of emails. We used the same number of folds across all methods in order to facilitate comparison.
 
-Preliminary comparison of results was conducted by generating the ROC curve for each classifier. The ROC curve for our multinomial naive Bayes classifier on the trec07p data set can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision-recall curve can be seen in figure \ref{fig:nb}(b) and also shows that this classifier has extremely good performance on the data set. Curves for our other methods were extremely similar, and are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the public GitHub repository for this project. [2] In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a $\log_{10}$ scale in order to examine lower false positive rates. However, this did not significantly improve the quality of the graphs.
+Preliminary comparison of results was conducted by generating the ROC curve for each classifier on the trec07p data set. The ROC curve for our multinomial naive Bayes classifier can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision-recall curve can be seen in figure \ref{fig:nb}(b) and also shows that this classifier has extremely good performance on the data set. Curves for our other methods were extremely similar, and are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the public GitHub repository for this project. [2] In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a $\log_{10}$ scale in order to examine lower false positive rates. However, this did not significantly improve the quality of the graphs.
 
 \begin{figure}[h]
   \centering
@@ -77,7 +77,7 @@ Preliminary comparison of results was conducted by generating the ROC curve for 
   \label{fig:nb}
 \end{figure}
 
-We conducted further analysis using the precision, recall, and $F_1$ score metrics. Figure \ref{fig:table} shows these values for all classifiers on the provided training and test sets of the trec07p data set, and averages from running 5-fold cross-validation on the training set. 
+We conducted further analysis using the accuracy (fraction classified correctly), precision, recall, and $F_1$ score metrics. Figure \ref{fig:table} shows these values for all classifiers on the provided training and test sets of the trec07p data set, and averages from running 5-fold cross-validation on the training set. 
 
 There are a few differences between performance on the entire corpus versus doing cross-validation. The most easily explained of these is the time: because cross-validation trains on only 4/5 of the available training data for each fold, it takes less time than training on all the data. 
 
