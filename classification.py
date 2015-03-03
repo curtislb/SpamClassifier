@@ -1,6 +1,6 @@
 from email_process import read_bagofwords_dat, read_classes_txt
 from sklearn.cross_validation import StratifiedKFold
-from sklearn.feature_selection import SelectPercentile
+from sklearn.feature_selection import SelectPercentile, SelectKBest
 from sklearn.metrics import roc_curve, precision_recall_curve
 import matplotlib.pyplot as plt
 import time
@@ -53,9 +53,11 @@ def _test_classifier(classifier, X, y, f_selector=None, make_graphs=True,):
             if y[i] == 1:
                 true_pos += 1
             else:
+#                 print 'FP:', i
                 false_pos += 1
         else:
             if y[i] == 1:
+#                 print 'FN:', i
                 false_neg += 1
             else:
                 true_neg += 1
@@ -109,3 +111,15 @@ def cross_validation(classifier, num_folds=5, select_features=False):
             _test_classifier(classifier, X_test, y_test, make_graphs=False)
         print '------------------'
         fold += 1
+
+###############################################################################
+
+if __name__ == '__main__':
+    skb = SelectKBest(k=20)
+    skb.fit(TRAIN_WORDS, TRAIN_CLASSES)
+    feature_mask = skb.get_support()
+    for i in xrange(len(feature_mask)):
+        if feature_mask[i]:
+            print i
+    for score in skb.scores_[feature_mask]:
+        print score
