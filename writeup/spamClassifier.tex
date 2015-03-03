@@ -36,7 +36,9 @@ Email is something used daily by a large number of people. Advertisers and other
 
 %------------------------------------------------------------------------
 \section{Description of data and data processing}
-The training data set consists of 22,500 spam emails and 22,500 non-spam emails from the trec07p data set. We used the provided script to define a vocabulary create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam emails and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
+The training data set consists of 22,500 spam and 22,500 non-spam emails from the trec07p data set. We used the provided script to define a vocabulary and create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
+
+We also used 180,000 emails from the Enron data set [3] and used it for testing across data sets. 
 
 %------------------------------------------------------------------------
 \section{Methods}
@@ -55,26 +57,11 @@ We used the methods implemented in the scikit-learn package. [1]
 \end{enumerate}
 
 %------------------------------------------------------------------------
-\section{Preliminary results}
-\subsection{Simple classifiers}
-\subsubsection{Multinomial naive Bayes}
-Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. The ROC curve can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision recall curve can be seen in figure \ref{fig:nb}(b). Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the GitHub repository for this project. [2]
+\section{Analysis of results}
+\subsection{Evaluation metrics}
+For each classification method, we used stratified 5-fold cross-validation on the training set of emails. We used the same number of folds across all methods in order to facilitate comparison.
 
-\subsubsection{Decision tree}
-Training this classifier on all available training data and testing on the provided testing set resulted in an accuracy rate of of 99.5\%. As the ROC curve is almost identical to that of multinomial naive Bayes, it also has a very high true positive and low false positive rate. 
-
-\subsubsection{Logistic regression}
-This method had an 99.75\% accuracy. This method also has a very high true positive and low false positive rate. 
-
-\subsection{Complex classifiers}
-\subsubsection{Random forests}
-Using this method, we got 99.58\% accuracy. This method, like the others, has a very high true positive and low false positive rate. This indicates the high level of correctness of this method. 
-
-\subsubsection{AdaBoost}
-AdaBoost had 99.16\% accuracy. Like the other methods, it has a very high true positive and low false positive rate. This method also ran extremely slowly compared to our other methods. 
-
-\subsection{Notes}
-In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a log10 scale in order to examine lower false positive rates. However, this did not significantly change the quality of the graph so we decided not to include it in this report. 
+Preliminary comparison of results, was done using accuracy and ROC curves. The ROC curve for multinomial naive Bayes can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision-recall curve can be seen in figure \ref{fig:nb}(b) and also shows that this classifier has extremely good performance. Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the GitHub repository for this project. [2] In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a log10 scale in order to examine lower false positive rates. However, this did not significantly change the quality of the graph so we decided not to include them.
 
 \begin{figure}[h]
   \centering
@@ -90,12 +77,7 @@ In an effort to view the data more clearly, we plotted the data on log scales. S
   \label{fig:nb}
 \end{figure}
 
-%------------------------------------------------------------------------
-\section{Analysis of results}
-\subsection{Initial results}
-For each classification method, we used stratified 5-fold cross-validation on the training set of emails. We used the same number of folds across all methods in order to facilitate comparison.
-
-Preliminary comparison of results, described in the previous section, was done using accuracy and ROC curves. We then did further analysis and comparison using precision, recall, and $F_1$ scores. In figure \ref{fig:table}, we can see values for the methods run on both the entire corpus at once and for averages from running 5-fold cross-validation. 
+We then did further analysis and comparison using precision, recall, and $F_1$ scores. In figure \ref{fig:table}, we can see values for the methods run on both the entire corpus at once and for averages from running 5-fold cross-validation. 
 
 There are a few differences between running classifiers on the entire corpus versus doing cross-validation. The most easily explained of these is the time: because cross-validation trains using 4/5 of the available data, it will take less time than training on all the data. 
 
@@ -119,7 +101,7 @@ There are a few differences between running classifiers on the entire corpus ver
 \end{figure}
 
 \subsection{Running time}
-As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the five methods we used. Logistic regression and random forests perform reasonably well. Decision trees, however, are rather slow. This is due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow; moreover, AdaBoost does not offer any sort of increase in performance with regards to accuracy. It is therefore a suboptimal choice for solving this problem. 
+As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the five methods we used. Logistic regression and random forests perform reasonably well. Decision trees, however, are rather slow. This is due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow and does not offer any sort of increase in performance with regards to accuracy. It is therefore a suboptimal choice for solving this problem. 
 
 \subsection{Feature selection results}
 We tried selection of 5, 10, and 15\% of features. Performance among the three was best at the 5\% level of selection; we have included these results in figure \ref{fig:table_selected}. In comparison to learning on the entire training set, performance on the feature selected set in terms of accuracy, precision, recall, and $F_1$ decreased slightly. On the other hand, running time also decreased dramatically for most methods.  
@@ -159,21 +141,38 @@ We considered an example ``hard'' to classify if it was misclassified by more th
 The only cases that were misclassified by all of our classifiers were false negatives. Hard examples included emails whose entire bodies consisted of random strings of letters (commonly text representations of images). Because we used a bag-of-words representation, it would treat these long strings as unique. Many other examples were very short emails. It makes sense that these might be misclassified because there's just not that much content to work with. Finally, one spam email was written entirely in German, which the classifiers did not catch because most, if not all, of the other emails in this data set were written in English. 
 
 %------------------------------------------------------------------------
+\section{Generalization across datasets}
+We trained a logistic regression classifier on the trec07p training data and tested it on the Enron data set. The results are summarized in figure \ref{fig:table_comparison}. The classifiers did much worse than they did when we tested it on the trec07p set. This indicates that the classifiers instead learned data set-specific features rather than general spam-specific features. 
+
+Feature selection did not help at all and actually decreased performance. While feature selection is intended to increase performance by decreasing overfitting, that did not happen in this case. This might be because the ``best'' features that were chosen could all have been data set-specific features, which would actually increase overfitting and explain the decrease in performance. 
+
+\begin{figure}[h]
+  \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
+    \hline
+    Classifier    & Feature selection? & Time (s) & Accuracy & Precision & Recall & $F_1$ score  \\ \hline
+    Naive Bayes   & No                 & 1.46     & 0.6691   & 0.7610    & 0.4930 & 0.5984       \\ \cline{2-7}  
+                  & Yes                & 0.08     & 0.4876   & 0.4847    & 0.3922 & 0.4336       \\ \hline
+    Logistic Regr & No                 & 8.48     & 0.4076   & 0.4426    & 0.7126 & 0.5460       \\ \cline{2-7}
+                  & Yes                & 5.88     & 0.3147   & 0.3811    & 0.5939 & 0.4643       \\ \hline
+  \end{tabular}
+  \caption{Results from using classifiers trained on trec07p and testing on the Enron data set}
+  \label{fig:table_comparison}
+\end{figure}
+
+%------------------------------------------------------------------------
 \section{Conclusion and possible extensions}
 
 For the problem of spam classification, logistic regression seems to be the best choice to use of the five methods we explored. It had extremely high accuracy, precision, and recall and also had reasonable running time. Furthermore, its running time scales sublinearly with respect to the number of features. AdaBoost is not a good choice for this problem due to its large running time and its lack of increased performance relative to other possibilities. 
 
 Feature selection presents a tradeoff between correctness and computational time, but correctness suffers by a far smaller margin than computational time is benefited. In time-sensitive situations, using feature selection would definitely be preferable; in general, feature selection is probably still preferable.
 
-We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. 
-
-To elaborate on the above points, word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation also matters, because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
+We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. Word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation matters because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
 
 One other feature is looking for attachments on files and possibly also looking at their types/file extensions. This would help solve the issue we ran into with image attachments that ended up being spam but were missed by our classifier. 
 
 It also may be beneficial to compare the words we get to actual English words. This would help remedy the issue with missing spam emails that just consisted of long strings of random letters or that were written in other languages. 
 
-Another possible extension is using a different data set. While our classifier performed very well on this particular data set, that performance might not necessarily hold for use on other data sets. This is because the set itself might have some trait that's highly indicative of spam versus not-spam that is not indicative of or present in the population of emails as a whole. It would be helpful to use a classifier trained on one set to test a different email corpus. 
+Furthermore, because false positives are worse than false negatives, it may be helpful to penalize false positives more harshly during training to account for this fact. 
 
 %------------------------------------------------------------------------
 \section{References}
@@ -181,5 +180,7 @@ Another possible extension is using a different data set. While our classifier p
 [1] http://scikit-learn.org/stable/
 
 [2] https://github.com/curtislb/SpamClassifier
+
+[3] https://www.cs.cmu.edu/$\sim$./enron/
 
 \end{document}
