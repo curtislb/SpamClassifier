@@ -27,22 +27,22 @@
 \maketitle
 
 \begin{abstract}
-Spam, or unsolicited email, is currently a large problem due to the popularity of email. In this assignment, we discuss various machine learning methods and use them to create spam classifiers. We then analyze the results and effectiveness of these methods. We found that logistic regression is the best method to use for this problem, and AdaBoost is the least preferable. 
+Identifying spam, or unsolicited email, is a problem of central relevance and importance due to the popularity of email as a means of electronic communication. In this assignment, we discuss various machine learning methods and use them to create spam classifiers based on a bag-of-words representation. We then analyze their performance within and across data sets to determine which classification models are the most well-suited to this problem. 
 \end{abstract}
 
 %------------------------------------------------------------------------
 \section{Introduction and background}
-Email is something used daily by a large number of people. Advertisers and other people trying to sell things have taken advantage of this fact by sending out unsolicited emails, which is referred to as spam. In response to this, spam filters were created to identify these emails and to keep them from clogging up inboxes.
+Email is a service used daily by an overwhelming number of people. But in addition to ordinary, benevolent users, advertisers and scammers take advantage of the popularity of email by sending out a huge volume of unsolicited emails, often referred to as spam. Spam filters aim to alleviate this problem by identifying these spam emails and sequestering them in a separate folder, to prevent them from clogging up users' inboxes.
 
 %------------------------------------------------------------------------
 \section{Description of data and data processing}
-The training data set consists of 22,500 spam and 22,500 non-spam emails from the trec07p data set. We used the provided script to define a vocabulary and create a bag-of-words representation for each email. The resulting vocabulary contained 9579 words. The classifiers are built using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam and 2,500 non-spam emails from the same corpus, and they are processed in a similar manner to also create bag-of-words representations. 
+Our training data set consists of 22,500 spam and 22,500 non-spam emails from the trec07p data set. [6] We used the email processing script provided to define a vocabulary and create a bag-of-words representation for each email. The resulting vocabulary contained 9,579 words. Each of the classifiers was trained using these bag-of-words representations as features for the training data. The testing data set consists of 2,500 spam and 2,500 non-spam emails from the same corpus, processed in a similar manner to create bag-of-words representations. 
 
-We also used 180,000 emails from the Enron data set [3] and used it for testing across data sets. 
+In addition, we tested our models on 20,000 emails from the Enron data set [3] in order to infer how well our methods would generalize across data sets. 
 
 %------------------------------------------------------------------------
 \section{Methods}
-We used the methods implemented in the scikit-learn package. [1]
+We used the following methods, as implemented in the Python scikit-learn package. [1]
 \subsection{Simple methods}
 \begin{enumerate}
   \item Naive Bayes classifier, using multinomial implemenation
@@ -61,7 +61,7 @@ We used the methods implemented in the scikit-learn package. [1]
 \subsection{Evaluation metrics}
 For each classification method, we used stratified 5-fold cross-validation on the training set of emails. We used the same number of folds across all methods in order to facilitate comparison.
 
-Preliminary comparison of results, was done using accuracy and ROC curves. The ROC curve for multinomial naive Bayes can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision-recall curve can be seen in figure \ref{fig:nb}(b) and also shows that this classifier has extremely good performance. Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the GitHub repository for this project. [2] In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a log10 scale in order to examine lower false positive rates. However, this did not significantly change the quality of the graph so we decided not to include them.
+Preliminary comparison of results was conducted by generating the ROC curve for each classifier. The ROC curve for our multinomial naive Bayes classifier on the trec07p data set can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision-recall curve can be seen in figure \ref{fig:nb}(b) and also shows that this classifier has extremely good performance on the data set. Curves for our other methods were extremely similar, and are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup/images'' folder of the public GitHub repository for this project. [2] In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a $\log_{10}$ scale in order to examine lower false positive rates. However, this did not significantly improve the quality of the graphs.
 
 \begin{figure}[h]
   \centering
@@ -77,9 +77,9 @@ Preliminary comparison of results, was done using accuracy and ROC curves. The R
   \label{fig:nb}
 \end{figure}
 
-We then did further analysis and comparison using precision, recall, and $F_1$ scores. In figure \ref{fig:table}, we can see values for the methods run on both the entire corpus at once and for averages from running 5-fold cross-validation. 
+We conducted further analysis using the precision, recall, and $F_1$ score metrics. Figure \ref{fig:table} shows these values for all classifiers on the provided training and test sets of the trec07p data set, and averages from running 5-fold cross-validation on the training set. 
 
-There are a few differences between running classifiers on the entire corpus versus doing cross-validation. The most easily explained of these is the time: because cross-validation trains using 4/5 of the available data, it will take less time than training on all the data. 
+There are a few differences between performance on the entire corpus versus doing cross-validation. The most easily explained of these is the time: because cross-validation trains on only 4/5 of the available training data for each fold, it takes less time than training on all the data. 
 
 \begin{figure}[h]
   \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
@@ -101,14 +101,14 @@ There are a few differences between running classifiers on the entire corpus ver
 \end{figure}
 
 \subsection{Running time}
-As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the five methods we used. Logistic regression and random forests perform reasonably well. Decision trees, however, are rather slow. This is due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow and does not offer any sort of increase in performance with regards to accuracy. It is therefore a suboptimal choice for solving this problem. 
+As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the five methods we used. Logistic regression and random forests are also reasonably fast. Decision trees, however, are rather slow. This is likely due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow and does not offer any notable increase in performance with regards to accuracy. It therefore appears to be a suboptimal choice for solving this problem. 
 
 \subsection{Feature selection results}
-We tried selection of 5, 10, and 15\% of features. Performance among the three was best at the 5\% level of selection; we have included these results in figure \ref{fig:table_selected}. In comparison to learning on the entire training set, performance on the feature selected set in terms of accuracy, precision, recall, and $F_1$ decreased slightly. On the other hand, running time also decreased dramatically for most methods.  
+We tried selection of 5, 10, and 15\% of features. Performance among the three was best at the 5\% level of selection; we have included these results in figure \ref{fig:table_selected}. In comparison to training with the entire set of features, performance was slightly worse in terms of accuracy, precision, recall, and $F_1$ after performing feature selection. However, run-time also decreased dramatically for most methods.  
 
-An exception to the running time decreasing drastically is logistic regression. While its running time decreased after feature selection, it does not scale linearly with the number of features. For example, the running time for naive Bayes dropped from 1.51 to 0.08 seconds (about 5\% of its original runtime) after feature selection. In contrast, the running time for logistic regression only dropped from 8.62 to 6.01 (69.7\% of its original runtime). 
+An exception to running time decreasing drastically is logistic regression. While its running time decreased after feature selection, it did not scale linearly with the number of features. For example, the running time for naive Bayes dropped from 1.51 to 0.08 seconds (about 5\% of its original runtime) after feature selection. In contrast, the running time for logistic regression only dropped from 8.62 to 6.01 (69.7\% of its original runtime). 
 
-Because the drop in correctness is most likely not as significant as the boost in performance time-wise in most situations, feature-selected training and testing is probably preferable. In situations that require high accuracy/precision, however, using the full feature set would still be better. 
+Because this decrease in performance is most likely not as significant as the benefit of a much lower run-time in most situations, feature-selected training and testing is probably preferable. In situations that require high accuracy/precision, however, using the full feature set would still be better. 
 
 \begin{figure}[h]
   \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
@@ -130,21 +130,21 @@ Because the drop in correctness is most likely not as significant as the boost i
 \end{figure}
 
 \subsection{Important features}
-During feature selection, we selected the ``best'' 5\% of features. Features were ranked by statistical significance, which was found using ANOVA analysis. We looked at the top 20 features according to this analysis, and most of the words appeared to be part of email headers. Some examples include: ``unsubscrib'', ``list'', ``bounce'', ``subject'', and ``mailto''. This suggests that a possible extension is examining these email headers more closely. Two of our features are actually ``spam'' and ``spamassassin'', suggesting that these emails have already been classified at least once or are announcing themselves as ``not-spam''. This may have impacted our performance on this data set. 
+During feature selection, we selected the ``best'' 5\% of features. Features were ranked by statistical significance, which was found using ANOVA analysis. We also looked at the top 20 features for the trec07p data set according to this analysis. Most of these words appeared to be parts of email headers. Some examples include: ``unsubscribe'', ``list'', ``bounce'', ``subject'', and ``mailto''. This suggests that a possible extension is examining these email headers more closely. Two of our features are actually ``spam'' and ``spamassassin'', suggesting that these emails may already be labeled as spam or are announcing themselves as ``not-spam'', which may have impacted performance.
 
 \subsection{False negatives versus false positives}
-For the problem of spam classification, it's better to have false negatives than false positives. This is because a user can manually specify that an email is spam, but they are unlikely to explore their ``spam'' folder. Therefore, non-spam emails classified as spam are likely to be missed entirely; this is highly undesirable. In general, the added hassle of having to deal with an occasional spam email outweighs the cost of missing an important email. 
+For the problem of spam classification, it is generally better to have false negatives than false positives. Whereas a user can ignore a spam email in their inbox, they are unlikely to explore their ``spam'' folder. Therefore, non-spam emails classified as spam are likely to be missed entirely. In general, the added hassle of having to deal with an occasional spam email outweighs the cost of missing an important email. Thankfully, all of our classifiers yielded far more false negatives than false positives for the trec07p data set.
 
 \subsection{Hard cases to classify}
-We considered an example ``hard'' to classify if it was misclassified by more than one classifier. Hard false positives were rare, but appear to mostly be emails send to mailing lists.
+We considered an example ``hard'' to classify if it was misclassified by more than one classifier. Hard false positives were rare, but appear to mostly be emails sent to mailing lists.
 
-The only cases that were misclassified by all of our classifiers were false negatives. Hard examples included emails whose entire bodies consisted of random strings of letters (commonly text representations of images). Because we used a bag-of-words representation, it would treat these long strings as unique. Many other examples were very short emails. It makes sense that these might be misclassified because there's just not that much content to work with. Finally, one spam email was written entirely in German, which the classifiers did not catch because most, if not all, of the other emails in this data set were written in English. 
+The only cases that were misclassified by all of our classifiers were false negatives. Hard examples included emails whose entire bodies consisted of long strings of letters (such as text representations of images). Because we used a bag-of-words representation, such long strings would be treated as unique and not provide any information about whether an email was spam. Other hard examples were very short emails. These might be misclassified because there is simply less content for classifiers to work with. Finally, one spam email was written entirely in German, which the classifiers did not catch because most, if not all, of the other emails in this data set were written in English. 
 
 %------------------------------------------------------------------------
 \section{Generalization across datasets}
-We trained a logistic regression classifier on the trec07p training data and tested it on the Enron data set. The results are summarized in figure \ref{fig:table_comparison}. The classifiers did much worse than they did when we tested it on the trec07p set. This indicates that the classifiers instead learned data set-specific features rather than general spam-specific features. 
+We trained a our naive Bayes and logistic regression classifiers on the trec07p training data and tested them on the Enron data set. The results are summarized in figure \ref{fig:table_comparison}. The classifiers did much worse than they when tested on the trec07p set. This indicates that the classifiers learned data set-specific features rather than general characteristics indicative of spam. 
 
-Feature selection did not help at all and actually decreased performance. While feature selection is intended to increase performance by decreasing overfitting, that did not happen in this case. This might be because the ``best'' features that were chosen could all have been data set-specific features, which would actually increase overfitting and explain the decrease in performance. 
+Feature selection did not help at all and actually worsened performance. While feature selection is intended to increase performance by decreasing overfitting, that did not happen in this case. This might be because the ``best'' features that were chosen could all have been data set-specific features, which would actually increase overfitting of the models. 
 
 \begin{figure}[h]
   \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
@@ -164,15 +164,15 @@ Feature selection did not help at all and actually decreased performance. While 
 
 For the problem of spam classification, logistic regression seems to be the best choice to use of the five methods we explored. It had extremely high accuracy, precision, and recall and also had reasonable running time. Furthermore, its running time scales sublinearly with respect to the number of features. AdaBoost is not a good choice for this problem due to its large running time and its lack of increased performance relative to other possibilities. 
 
-Feature selection presents a tradeoff between correctness and computational time, but correctness suffers by a far smaller margin than computational time is benefited. In time-sensitive situations, using feature selection would definitely be preferable; in general, feature selection is probably still preferable.
+Feature selection presents a tradeoff between correctness and computational time, but correctness suffers by a far smaller margin than computational time is benefited. In most, and especially time-sensitive situations, using feature selection would definitely be preferable.
 
-We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. Word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. This could be accomplished using a bigram model, as discussed by Cormack et al (2007) [4]. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation matters because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
+We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. Word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. This could be accomplished using a bigram model, as discussed by Cormack et al. [4]. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation matters because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
 
 One other feature is looking for attachments on files and possibly also looking at their types/file extensions. This would help solve the issue we ran into with image attachments that ended up being spam but were missed by our classifier. 
 
 It also may be beneficial to compare the words we get to actual English words. This would help remedy the issue with missing spam emails that just consisted of long strings of random letters or that were written in other languages. 
 
-Furthermore, because false positives are worse than false negatives, it may be helpful to penalize false positives more harshly during training to account for this fact. However, some sources, such as Zhang et al (2004), suggest that heavily penalizing false positives may actually reduce performance in some cases. [5]
+Furthermore, because false positives are worse than false negatives, it may be helpful to penalize false positives more harshly during training to account for this fact. However, some sources, such as Zhang et al., suggest that heavily penalizing false positives may actually reduce performance in some cases. [5]
 
 %------------------------------------------------------------------------
 \section{References}
@@ -186,5 +186,7 @@ Furthermore, because false positives are worse than false negatives, it may be h
 [4] G. V. Cormack, G. Hidalgo, E. P. Sánz, and J. María. Spam Filtering for Short Messages. In CIKM, 2007.
 
 [5] Le Zhang, Jingbo Zhu, and Tianshun Yao. An evaluation of statistical spam filtering techniques. ACM Transactions on Asian Language Information Processing (TALIP) volume 3 issue 4: 243-269, 2004.
+
+[6] Cormack, G. V. (2007). TREC 2007 spam track overview. In Proc of TREC 2007: The 16th text retrieval conf.
 
 \end{document}
