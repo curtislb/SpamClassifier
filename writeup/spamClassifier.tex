@@ -166,21 +166,25 @@ For the problem of spam classification, logistic regression seems to be the best
 
 Feature selection presents a tradeoff between correctness and computational time, but correctness suffers by a far smaller margin than computational time is benefited. In time-sensitive situations, using feature selection would definitely be preferable; in general, feature selection is probably still preferable.
 
-We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. Word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation matters because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
+We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. Word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. This could be accomplished using a bigram model, as discussed by Cormack et al (2007) [4]. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation matters because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
 
 One other feature is looking for attachments on files and possibly also looking at their types/file extensions. This would help solve the issue we ran into with image attachments that ended up being spam but were missed by our classifier. 
 
 It also may be beneficial to compare the words we get to actual English words. This would help remedy the issue with missing spam emails that just consisted of long strings of random letters or that were written in other languages. 
 
-Furthermore, because false positives are worse than false negatives, it may be helpful to penalize false positives more harshly during training to account for this fact. 
+Furthermore, because false positives are worse than false negatives, it may be helpful to penalize false positives more harshly during training to account for this fact. However, some sources, such as Zhang et al (2004), suggest that heavily penalizing false positives may actually reduce performance in some cases. [5]
 
 %------------------------------------------------------------------------
 \section{References}
 \bibliography{ref}
-[1] http://scikit-learn.org/stable/
+[1] Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion B, et al. (2011) Scikit-learn: Machine learning in Python. Journal of Machine Learning Research 12: 2825–2830.
 
 [2] https://github.com/curtislb/SpamClassifier
 
-[3] https://www.cs.cmu.edu/$\sim$./enron/
+[3] Bryan Klimt and Yiming Yang. Introducing the enron corpus. In CEAS, 2004.
+
+[4] G. V. Cormack, G. Hidalgo, E. P. Sánz, and J. María. Spam Filtering for Short Messages. In CIKM, 2007.
+
+[5] Le Zhang, Jingbo Zhu, and Tianshun Yao. An evaluation of statistical spam filtering techniques. ACM Transactions on Asian Language Information Processing (TALIP) volume 3 issue 4: 243-269, 2004.
 
 \end{document}
