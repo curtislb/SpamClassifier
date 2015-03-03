@@ -41,87 +41,77 @@ The training data set consists of 22,500 spam emails and 22,500 non-spam emails 
 %------------------------------------------------------------------------
 \section{Methods}
 We used the methods implemented in the scikit-learn package. [1]
-\subsection{Naive Bayes, using multinomial implementation}
-As a baseline, we trained a Naive Bayes multinomial model on all of the training data using the default parameters provided by scikit-learn. The default parameters included Laplace smoothing, learning class prior probabilities, and no previously provided class priors. 
+\subsection{Simple methods}
+\begin{enumerate}
+  \item Naive Bayes classifier, using multinomial implemenation
+  \item Decision tree, using Gini impurity scores and no max tree depth
+  \item Logistic regression, with $l_2$ penalty
+\end{enumerate}
 
-\subsection{Decision tree}
-We also used the default parameters, which meant that splits were determined using Gini impurity, the best split at each node was chosen, and the depth of the tree was not constrained. However, nodes were only split if it contained at least two samples; a leaf could only exist if it had at least one sample. Because of the large number of features and because the depth of the tree was not constrained, this method was significantly slower than the other two. 
-
-\subsection{Logistic regression} 
-
-\subsection{Random forests with 10 trees}
-We once again used the default parameters. This includes building 10 random trees using Gini impurity. This method constrains tree height when growing the tree. Because of this, random forests ran much more quickly than the decision tree.
-
-\subsection{AdaBoost}
-We used AdaBoost with 50 decision stumps. Because of the number of weak learners, AdaBoost took a longer time than random forests and naive Bayes; however, it took less time than decision trees. 
+\subsection{Complex methods (ensemble learning)}
+\begin{enumerate}
+  \item Random forests, with 10 trees and Gini impurity scores 
+  \item AdaBoost, with 50 decision stumps as weak learners
+\end{enumerate}
 
 %------------------------------------------------------------------------
 \section{Preliminary results}
 \subsection{Simple classifiers}
 \subsubsection{Multinomial naive Bayes}
-Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. The ROC curve can be seen in figure \ref{fig:roc}(a) and indicates a high true positive and low false positive rate.
+Using this classifier, we predicted labels for the testing data and got an accuracy rate of 98.74\%. The ROC curve can be seen in figure \ref{fig:nb}(a) and indicates a high true positive and low false positive rate. The precision recall curve can be seen in figure \ref{fig:nb}(b). Curves for our other methods looked extremely similar to these, so they are not included in this report. The full set of ROC and precision-recall curves can be found in the ``writeup'' folder of the GitHub repository for this project. [2]
 
 \subsubsection{Decision tree}
-Training this classifier on all available training data and testing on the provided testing set resulted in an accuracy rate of of 99.5\%. The ROC curve can be seen in figure \ref{fig:roc}(b). Like the ROC curve for naive Bayes, it indicates that this method has a high true positive and low false positive rate. This method's higher accuracy (relative to naive Bayes) is shown by the fact that the ROC curve is barely visible because it's almost entirely on top of the axis.
+Training this classifier on all available training data and testing on the provided testing set resulted in an accuracy rate of of 99.5\%. As the ROC curve is almost identical to that of multinomial naive Bayes, it also has a very high true positive and low false positive rate. 
 
 \subsubsection{Logistic regression}
 This method had an 99.75\% accuracy. This method also has a very high true positive and low false positive rate. 
 
 \subsection{Complex classifiers}
-We also used some ensemble learning methods to do a more complex analysis. 
-
 \subsubsection{Random forests}
-Using this method, we got 99.58\% accuracy. The ROC curve can be seen in figure \ref{fig:roc}(c). This method, like the others, has a very high true positive and low false positive rate. Like the ROC curve for the decision tree, this ROC curve is almost entirely on top of this axis. This indicates the high level of correctness of this method. 
+Using this method, we got 99.58\% accuracy. This method, like the others, has a very high true positive and low false positive rate. This indicates the high level of correctness of this method. 
 
 \subsubsection{AdaBoost}
 AdaBoost had 99.16\% accuracy. Like the other methods, it has a very high true positive and low false positive rate. This method also ran extremely slowly compared to our other methods. 
 
+\subsection{Notes}
 In an effort to view the data more clearly, we plotted the data on log scales. Specifically, we plotted the x-axis on a log10 scale in order to examine lower false positive rates. However, this did not significantly change the quality of the graph so we decided not to include it in this report. 
 
 \begin{figure}[h]
   \centering
-  \begin{subfigure}{0.3\textwidth}
+  \begin{subfigure}{0.35\textwidth}
     \includegraphics[width=\textwidth]{naive_bayes_roc_curve.png}
-    \caption{Multinomial Naive Bayes}
+    \caption{ROC curve}
   \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-    \includegraphics[width=\textwidth]{decision_tree_roc_curve.png}
-    \caption{Decision Tree}
+  \begin{subfigure}{0.35\textwidth}
+    \includegraphics[width=\textwidth]{naive_bayes_pr_curve.png}
+    \caption{Precision-recall curve}
   \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-    \includegraphics[width=\textwidth]{random_forest_roc_curve.png}
-    \caption{Random Forest}
-  \end{subfigure}
-  \caption{ROC curves for various methods}
-  \label{fig:roc}
+  \caption{ROC and precision-recall curves for Multinomial Naive Bayes}
+  \label{fig:nb}
 \end{figure}
 
 %------------------------------------------------------------------------
 \section{Analysis of results}
 \subsection{Initial results}
-For each classification method, we used stratified 5-fold cross-validation. We wanted to use the same number of folds across all methods in order to facilitate comparison. Initially, we used a higher number but decided to reduce the number of folds due to time considerations when running decision tree. 
+For each classification method, we used stratified 5-fold cross-validation on the training set of emails. We used the same number of folds across all methods in order to facilitate comparison.
 
-Preliminary comparison of results, described in the previous section, was done using accuracy and ROC curves. We then did further analysis and comparison using precision, recall, and F1-scores. In figure \ref{fig:table}, we can see values for the methods run on both the entire corpus at once and for averages from running 5-fold cross-validation. 
+Preliminary comparison of results, described in the previous section, was done using accuracy and ROC curves. We then did further analysis and comparison using precision, recall, and $F_1$ scores. In figure \ref{fig:table}, we can see values for the methods run on both the entire corpus at once and for averages from running 5-fold cross-validation. 
 
 There are a few differences between running classifiers on the entire corpus versus doing cross-validation. The most easily explained of these is the time: because cross-validation trains using 4/5 of the available data, it will take less time than training on all the data. 
-
-One thing to note is that for random forests, running time varies by around 1-1.5 seconds between runs. This is a significant amount, considering it takes around 7-9 seconds to run in total. This is most likely due to the fact that random forests selects a random subset of features to split on each time; some runs will get better features (that result more quickly in pure nodes) than others. 
-
-Another notable result happened when running cross-validation using decision tree. We had one run that had 0.939 accuracy, 0.992 precision, 0.8870 recall, and 0.936 $F_1$. In comparison to our overall and averaged results, which can be found in figure \ref{fig:table}, these values (except for precision) are extremely low. 
 
 \begin{figure}[h]
   \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
     \hline
-    Classifier    &                  & Time (s) & Accuracy & Precision & Recall & $F_1$  \\ \hline
-    Naive Bayes   & Entire corpus    & 1.51     & 0.9874   & 0.9963    & 0.9784 & 0.9873 \\ \cline{2-7}
+    Classifier    &                  & Time (s) & Accuracy & Precision & Recall & $F_1$ score  \\ \hline
+    Naive Bayes   & Entire data set  & 1.51     & 0.9874   & 0.9963    & 0.9784 & 0.9873 \\ \cline{2-7}
                   & Cross-validation & 1.25     & 0.9940   & 0.9984    & 0.9895 & 0.9939 \\ \hline
-    Decision Tree & Entire corpus    & 150.0    & 0.9948   & 0.9950    & 0.9936 & 0.9947 \\ \cline{2-7}
+    Decision Tree & Entire data set  & 150.0    & 0.9948   & 0.9950    & 0.9936 & 0.9947 \\ \cline{2-7}
                   & Cross-validation & 106.05   & 0.9856   & 0.9956    & 0.9752 & 0.9850 \\ \hline
-    Logistic Regr & Entire corpus    & 8.62     & 0.9974   & 0.9996    & 0.9952 & 0.9974 \\ \cline{2-7}
+    Logistic Regr & Entire data set  & 8.62     & 0.9974   & 0.9996    & 0.9952 & 0.9974 \\ \cline{2-7}
                   & Cross-validation & 6.08     & 0.9968   & 0.9955    & 0.9981 & 0.9968 \\ \hline
-    Random Forest & Entire corpus    & 11.46    & 0.9968   & 0.9992    & 0.9944 & 0.9968 \\ \cline{2-7}
+    Random Forest & Entire data set  & 11.46    & 0.9968   & 0.9992    & 0.9944 & 0.9968 \\ \cline{2-7}
                   & Cross-validation & 8.18     & 0.9976   & 0.9969    & 0.9984 & 0.9976 \\ \hline
-    AdaBoost      & Entire corpus    & 642.94   & 0.9916   & 0.9976    & 0.9856 & 0.9915 \\ \cline{2-7}
+    AdaBoost      & Entire data set  & 642.94   & 0.9916   & 0.9976    & 0.9856 & 0.9915 \\ \cline{2-7}
                   & Cross-validation & 482.88   & 0.9966   & 0.9970    & 0.9962 & 0.9966 \\ \hline
   \end{tabular}
   \caption{Results from using various methods}
@@ -129,10 +119,10 @@ Another notable result happened when running cross-validation using decision tre
 \end{figure}
 
 \subsection{Running time}
-As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the three methods we used. Logistic regression and random forests perform reasonably well. Decision trees, however, are rather slow. This is due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow; moreover, AdaBoost does not offer any sort of increase in performance with regards to accuracy. It is therefore a suboptimal choice for solving this problem. 
+As we can see in figure \ref{fig:table}, using Naive Bayes is by far the fastest of the five methods we used. Logistic regression and random forests perform reasonably well. Decision trees, however, are rather slow. This is due to the fact that we did not constrain the height of the tree. AdaBoost is prohibitively slow; moreover, AdaBoost does not offer any sort of increase in performance with regards to accuracy. It is therefore a suboptimal choice for solving this problem. 
 
 \subsection{Feature selection results}
-We tried selection of 5, 10, and 15\% of features. Performance among the three was best at the 5\% level of selection; we have included these results in figure \ref{fig:table_selected}. In comparison to training on the entire corpus, performance on the feature selected set in terms of accuracy, precision, recall, and $F_1$ decreased. On the other hand, running time also decreased dramatically for most methods. Therefore, feature selection presents a tradeoff between correctness and computational time: in time-sensitive situations, using feature selection would definitely be preferable. 
+We tried selection of 5, 10, and 15\% of features. Performance among the three was best at the 5\% level of selection; we have included these results in figure \ref{fig:table_selected}. In comparison to learning on the entire training set, performance on the feature selected set in terms of accuracy, precision, recall, and $F_1$ decreased slightly. On the other hand, running time also decreased dramatically for most methods.  
 
 An exception to the running time decreasing drastically is logistic regression. While its running time decreased after feature selection, it does not scale linearly with the number of features. For example, the running time for naive Bayes dropped from 1.51 to 0.08 seconds (about 5\% of its original runtime) after feature selection. In contrast, the running time for logistic regression only dropped from 8.62 to 6.01 (69.7\% of its original runtime). 
 
@@ -141,16 +131,16 @@ Because the drop in correctness is most likely not as significant as the boost i
 \begin{figure}[h]
   \begin{tabular}[h]{ | c | c | r | r | r | r | r | }
     \hline
-    Classifier    &                  & Time (s) & Accuracy & Precision & Recall & $F_1$  \\ \hline
-    Naive Bayes   & Entire corpus    & 0.08     & 0.9526   & 0.9752    & 0.9288 & 0.9514 \\ \cline{2-7}
+    Classifier    &                  & Time (s) & Accuracy & Precision & Recall & $F_1$ score  \\ \hline
+    Naive Bayes   & Entire data set  & 0.08     & 0.9526   & 0.9752    & 0.9288 & 0.9514 \\ \cline{2-7}
                   & Cross-validation & 0.07     & 0.9629   & 0.9636    & 0.9632 & 0.9630 \\ \hline
-    Decision Tree & Entire corpus    & 2.96     & 0.9936   & 0.9952    & 0.9920 & 0.9936 \\ \cline{2-7}
+    Decision Tree & Entire data set  & 2.96     & 0.9936   & 0.9952    & 0.9920 & 0.9936 \\ \cline{2-7}
                   & Cross-validation & 2.19     & 0.9925   & 0.9956    & 0.9894 & 0.9925 \\ \hline
-    Logistic Regr & Entire corpus    & 6.01     & 0.9938   & 0.9968    & 0.9908 & 0.9938 \\ \cline{2-7}
+    Logistic Regr & Entire data set  & 6.01     & 0.9938   & 0.9968    & 0.9908 & 0.9938 \\ \cline{2-7}
                   & Cross-validation & 3.13     & 0.9954   & 0.9954    & 0.9954 & 0.9954 \\ \hline
-    Random Forest & Entire corpus    & 0.82     & 0.9972   & 0.9984    & 0.9960 & 0.9972 \\ \cline{2-7}
+    Random Forest & Entire data set  & 0.82     & 0.9972   & 0.9984    & 0.9960 & 0.9972 \\ \cline{2-7}
                   & Cross-validation & 0.60     & 0.9976   & 0.9972    & 0.9981 & 0.9976 \\ \hline
-    AdaBoost      & Entire corpus    & 26.26    & 0.9868   & 0.9959    & 0.9776 & 0.9867 \\ \cline{2-7}
+    AdaBoost      & Entire data set  & 26.26    & 0.9868   & 0.9959    & 0.9776 & 0.9867 \\ \cline{2-7}
                   & Cross-validation & 17.88    & 0.9956   & 0.9965    & 0.9947 & 0.9956 \\ \hline
   \end{tabular}
   \caption{Results from using various methods after performing feature selection}
@@ -158,19 +148,30 @@ Because the drop in correctness is most likely not as significant as the boost i
 \end{figure}
 
 \subsection{Important features}
-During feature selection, we selected the ``best'' 5\% of features. Features were ranked by statistical significance, which was found using ANOVA analysis. 
+During feature selection, we selected the ``best'' 5\% of features. Features were ranked by statistical significance, which was found using ANOVA analysis. We looked at the top 20 features according to this analysis, and most of the words appeared to be part of email headers. Some examples include: ``unsubscrib'', ``list'', ``bounce'', ``subject'', and ``mailto''. This suggests that a possible extension is examining these email headers more closely. Two of our features are actually ``spam'' and ``spamassassin'', suggesting that these emails have already been classified at least once or are announcing themselves as ``not-spam''. This may have impacted our performance on this data set. 
 
-\subsection{Preferred performance}
-For this specific problem, it's better to have false negatives than false positives. This is because a user can manually specify that an email is spam, but they are unlikely to explore their ``spam'' folder. Therefore, non-spam emails classified as spam are likely to be missed entirely; this is highly undesirable. We feel that the added hassle of having to deal with an occasional spam email outweighs the cost of missing an important email. 
+\subsection{False negatives versus false positives}
+For the problem of spam classification, it's better to have false negatives than false positives. This is because a user can manually specify that an email is spam, but they are unlikely to explore their ``spam'' folder. Therefore, non-spam emails classified as spam are likely to be missed entirely; this is highly undesirable. In general, the added hassle of having to deal with an occasional spam email outweighs the cost of missing an important email. 
 
-\subsection{Easy and hard cases to classify}
+\subsection{Hard cases to classify}
+We considered an example ``hard'' to classify if it was misclassified by more than one classifier. Hard false positives were rare, but appear to mostly be emails send to mailing lists.
+
+The only cases that were misclassified by all of our classifiers were false negatives. Hard examples included emails whose entire bodies consisted of random strings of letters (commonly text representations of images). Because we used a bag-of-words representation, it would treat these long strings as unique. Many other examples were very short emails. It makes sense that these might be misclassified because there's just not that much content to work with. Finally, one spam email was written entirely in German, which the classifiers did not catch because most, if not all, of the other emails in this data set were written in English. 
 
 %------------------------------------------------------------------------
 \section{Conclusion and possible extensions}
 
+For the problem of spam classification, logistic regression seems to be the best choice to use of the five methods we explored. It had extremely high accuracy, precision, and recall and also had reasonable running time. Furthermore, its running time scales sublinearly with respect to the number of features. AdaBoost is not a good choice for this problem due to its large running time and its lack of increased performance relative to other possibilities. 
+
+Feature selection presents a tradeoff between correctness and computational time, but correctness suffers by a far smaller margin than computational time is benefited. In time-sensitive situations, using feature selection would definitely be preferable; in general, feature selection is probably still preferable.
+
 We feel that using a different model to represent the emails' content would be an interesting and potentially useful extension. While the bag-of-words model was certainly effective, many features were lost; in particular, we feel that things such as word order, capitalization, and punctuation are especially important in language and that their exclusion may have negatively impacted performance. 
 
 To elaborate on the above points, word order is important because it encodes meaning and context of sentences--single words on their own may be ambiguous. Capitalization also matters, as emails in all capitals, for example, are probably more likely to be spam. Punctuation also matters, because emails with punctuation are more likely to have proper grammar, and correct grammar intuitively seems indicative of non-spam (or, at least non-computer generated) emails. 
+
+One other feature is looking for attachments on files and possibly also looking at their types/file extensions. This would help solve the issue we ran into with image attachments that ended up being spam but were missed by our classifier. 
+
+It also may be beneficial to compare the words we get to actual English words. This would help remedy the issue with missing spam emails that just consisted of long strings of random letters or that were written in other languages. 
 
 Another possible extension is using a different data set. While our classifier performed very well on this particular data set, that performance might not necessarily hold for use on other data sets. This is because the set itself might have some trait that's highly indicative of spam versus not-spam that is not indicative of or present in the population of emails as a whole. It would be helpful to use a classifier trained on one set to test a different email corpus. 
 
@@ -178,5 +179,7 @@ Another possible extension is using a different data set. While our classifier p
 \section{References}
 \bibliography{ref}
 [1] http://scikit-learn.org/stable/
+
+[2] https://github.com/curtislb/SpamClassifier
 
 \end{document}
